@@ -18,9 +18,6 @@ namespace GameName
 
         public static GameManager Instance;
 
-        //AudioManager is set on Start(), responsible for all simple audio
-        private AudioManager _audioManager;
-
         //Drag and Drop the respective Canvases to these
         [SerializeField] private GameObject _menuScreen;
         [SerializeField] private GameObject _creditsScreen;
@@ -55,7 +52,7 @@ namespace GameName
                 case (GameState.MainMenu):
                     CloseAllCanvases();
                     Instance._menuScreen.SetActive(true);
-                    _audioManager.FadeGameTrack(Track.MainMenu);
+                    AudioManager.Instance.FadeGameTrack(Track.MainMenu);
                     break;
 
                 case (GameState.Credits):
@@ -78,8 +75,8 @@ namespace GameName
                     //PlayGameTrack is a Method in the AudioManager
                     //It plays the Track that is referenced by using a
                     //Track enum in EnumCollection
-                    _audioManager.FadeGameTrack(Track.MainMenu);
-                    _audioManager.FadeGameTrack(Track.GameTrackOne);
+                    AudioManager.Instance.FadeGameTrack(Track.MainMenu);
+                    AudioManager.Instance.FadeGameTrack(Track.GameTrackOne);
                     break;
 
                 case (GameState.GameOver):
@@ -116,16 +113,22 @@ namespace GameName
         //scripts that need to reference "Instance" in Start
         private void Awake()
         {
-            //Instantiates the GameManager as Singleton, also valid between Scenes
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+            }
 
-            //Gets the AudioManager Script Compononent 
-            //-> needs to be Component of the GameManager
-            _audioManager = Instance.GetComponent<AudioManager>();
+            DontDestroyOnLoad(this);                 
+        }
 
+        private void Start()
+        {
             //starts the game in the main menu
-            Instance.SwitchState(GameState.MainMenu);            
+            Instance.SwitchState(GameState.MainMenu);
         }
 
         #endregion

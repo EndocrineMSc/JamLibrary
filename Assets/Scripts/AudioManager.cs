@@ -8,10 +8,12 @@ using UnityEngine;
 
 namespace GameName.Audio
 {
-    //this script is intended to be a component of the GameManager GameObject
+    //this script is intended as a singleton
     public class AudioManager : MonoBehaviour
     {
         #region Fields
+
+        public static AudioManager Instance { get; private set; }
 
         private List<AudioSource> _gameTracks = new();
         private List<AudioSource> _soundEffects = new();
@@ -57,6 +59,22 @@ namespace GameName.Audio
         #endregion
 
         #region Private Functions
+
+        private void Awake()
+        {
+            // If there is an instance, and it's not this one, delete this one
+
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+            }
+
+            DontDestroyOnLoad(this);
+        }
 
         private void Start()
         {
