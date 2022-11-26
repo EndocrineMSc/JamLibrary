@@ -5,6 +5,9 @@ using EnumCollection;
 using GameName.Audio;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
+using Newtonsoft.Json.Converters;
 
 namespace GameName
 {
@@ -50,6 +53,14 @@ namespace GameName
             switch (state)
             {
                 case (GameState.MainMenu):
+                    Scene _scene = SceneManager.GetActiveScene();
+                    string _sceneName = _scene.name;
+
+                    if (_sceneName != "MainMenu")
+                    {
+                        SceneManager.LoadSceneAsync("MainMenu");
+                    }
+
                     CloseAllCanvases();
                     Instance._menuScreen.SetActive(true);
                     AudioManager.Instance.FadeGameTrack(Track.MainMenu);
@@ -75,6 +86,7 @@ namespace GameName
                     //PlayGameTrack is a Method in the AudioManager
                     //It plays the Track that is referenced by using a
                     //Track enum in EnumCollection
+                    SceneManager.LoadSceneAsync("LevelOne");
                     AudioManager.Instance.FadeGameTrack(Track.MainMenu);
                     AudioManager.Instance.FadeGameTrack(Track.GameTrackOne);
                     break;

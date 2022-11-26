@@ -81,7 +81,7 @@ namespace GameName.Buttons
         private void Start()
         {
             _instance = GameManager.Instance;
-            _audioManager = _instance.GetComponent<AudioManager>();
+            _audioManager = AudioManager.Instance;
         }
 
         #endregion
