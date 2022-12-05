@@ -29,16 +29,16 @@ namespace GameName.Audio
         //playing or not. Uses the enum Track to get a specific
         //Track according to the enum from the Track-List
         //Order in List will be according to order in GameObject
-        public void FadeGameTrack(Track track)
+        public void FadeGameTrack(Track track, Fade fade)
         {
             AudioSource audioSource = _gameTracks[(int)track];
 
-            if (!audioSource.isPlaying || audioSource.volume == 0)
+            if (fade == Fade.In)
             {
                 audioSource.volume = 0;
                 StartCoroutine(StartFade(audioSource, 3f, 1f));
             }
-            else
+            else if (fade == Fade.Out) 
             {
                 StartCoroutine(StartFade(audioSource, 3f, 0f));
             }
@@ -89,14 +89,15 @@ namespace GameName.Audio
         private IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
         {
             float currentTime = 0;
-            float start = audioSource.volume;
+            float startVolume = audioSource.volume;
 
             while (currentTime < duration)
             {
                 currentTime += Time.deltaTime;
-                audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
+                audioSource.volume = Mathf.Lerp(startVolume, targetVolume, currentTime / duration);
                 yield return null;
             }
+            audioSource.volume = targetVolume;
         }
 
         #endregion

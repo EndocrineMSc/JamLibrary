@@ -22,6 +22,12 @@ namespace EnumCollection
         GameTrackTwos,
     }
 
+    public enum Fade
+    {
+        In,
+        Out,
+    }
+
     public enum SFX
     {
         ButtonClick,

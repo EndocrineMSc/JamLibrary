@@ -5,9 +5,7 @@ using EnumCollection;
 using GameName.Audio;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
-using Newtonsoft.Json.Converters;
 
 namespace GameName
 {
@@ -19,7 +17,7 @@ namespace GameName
     {
         #region Fields
 
-        public static GameManager Instance;
+        public static GameManager Instance { get; private set; }
 
         //Drag and Drop the respective Canvases to these
         [SerializeField] private GameObject _menuScreen;
@@ -63,7 +61,7 @@ namespace GameName
 
                     CloseAllCanvases();
                     Instance._menuScreen.SetActive(true);
-                    AudioManager.Instance.FadeGameTrack(Track.MainMenu);
+                    AudioManager.Instance.FadeGameTrack(Track.MainMenu, Fade.In);
                     break;
 
                 case (GameState.Credits):
@@ -85,10 +83,10 @@ namespace GameName
                     CloseAllCanvases();
                     //PlayGameTrack is a Method in the AudioManager
                     //It plays the Track that is referenced by using a
-                    //Track enum in EnumCollection
+                    //Track enum in EnumCollection and an enum to decide whether to fade in or out
                     SceneManager.LoadSceneAsync("LevelOne");
-                    AudioManager.Instance.FadeGameTrack(Track.MainMenu);
-                    AudioManager.Instance.FadeGameTrack(Track.GameTrackOne);
+                    AudioManager.Instance.FadeGameTrack(Track.MainMenu, Fade.Out);
+                    AudioManager.Instance.FadeGameTrack(Track.GameTrackOne, Fade.In);
                     break;
 
                 case (GameState.GameOver):
@@ -132,9 +130,8 @@ namespace GameName
             else
             {
                 Instance = this;
+                DontDestroyOnLoad(this);
             }
-
-            DontDestroyOnLoad(this);                 
         }
 
         private void Start()
