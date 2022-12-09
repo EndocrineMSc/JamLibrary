@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1280
     height: 1357
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Project
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 371}
   m_MaxSize: {x: 10000, y: 10000}
@@ -494,15 +494,15 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/Sound Effects
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Sound Effects
   m_LastFoldersGridSize: 16
-  m_LastProjectPath: C:\Users\sebas\Documents\GitHub\JamLibrary
+  m_LastProjectPath: C:\Users\skeb9\Documents\GitLab\JamLibrary
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
