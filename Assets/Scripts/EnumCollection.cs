@@ -15,17 +15,19 @@ namespace EnumCollection
         Quit,
     }
 
+    public enum Fade
+    {
+        In,
+        Out,
+    }
+
+    //Tracks and SFX will be in alphabetical order depending on the name
+    //in the Assets/Resources Folder
     public enum Track
     {
         MainMenu,
         GameTrackOne,
         GameTrackTwos,
-    }
-
-    public enum Fade
-    {
-        In,
-        Out,
     }
 
     public enum SFX
