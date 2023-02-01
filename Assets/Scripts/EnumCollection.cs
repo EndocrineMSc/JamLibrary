@@ -27,12 +27,10 @@ namespace EnumCollection
     {
         MainMenu,
         GameTrackOne,
-        GameTrackTwos,
     }
 
     public enum SFX
     {
         ButtonClick,
-        PlayerGotHit,
     }
 }
