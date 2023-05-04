@@ -1,62 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using GameName;
-using EnumCollection;
 
 
-namespace GameName.Lives
+namespace Utility
 {
-
-    //this class handles the usage of player lives and their
-    //simple visual representation as buttons or sprites
-    //meant to be a component of the GameManager
-    public class LifeManager : MonoBehaviour
+    internal class LifeManager : MonoBehaviour
     {
-        #region Fields
+        #region Fields and Properties
 
-        //GameObjects (buttons or sprites) that represent the
-        //player lives need to be dragged into the script
         [SerializeField] private GameObject _lifeOne;
         [SerializeField] private GameObject _lifeTwo;
         [SerializeField] private GameObject _lifeThree;
 
-        #endregion
-
-        #region Properties
-
-        //lives property allows to get the remaining player
-        //lives from other scripts
-        private int _lives;
-
-        public int Lives
-        {
-            get { return _lives; }
-            private set { _lives = value; }
-        }
-
+        internal int Lives { get; private set; } = 3;
 
         #endregion
 
-        #region Public Functions
+        #region Functions
 
-        //public function to be called by other scripts
-        //for example on collision with enemies or similar
-        public void LoseLife()
+        internal void LoseLife()
         {
-            if (_lives > 0)
+            if (Lives > 0)
             {
-                _lives--;
+                Lives--;
             }
 
-            //switches visual representation of lives on and off
-            //depending on leftover lives
-            //has to be extended for further lives than 3
-            switch (_lives) 
+            switch (Lives) 
             {
-                //case with full lives is necessary for new game
-                //will reset the life counter on call
-                //call this in GameState "NewGame"
                 case 3:
                     _lifeOne.SetActive(true); 
                     _lifeTwo.SetActive(true);
@@ -75,9 +44,7 @@ namespace GameName.Lives
                     _lifeOne.SetActive(false);
                     GameManager.Instance.SwitchState(GameState.GameOver);
                     break;
-
             }
-
         }
 
         #endregion

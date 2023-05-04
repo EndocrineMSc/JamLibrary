@@ -1,100 +1,62 @@
-using System;
-using System.Collections.Generic;
-using System.Collections;
-using EnumCollection;
-using GameName.Audio;
+using Audio;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 
-namespace GameName
+namespace Utility
 {
-    //The GameManager is a Singleton that is always present,
-    //even when loading new Scenes
-    //Just put an empty GameObject in the Scene, name it GameManager
-    //and attach this script as a component
-    public class GameManager : MonoBehaviour
+    internal class GameManager : MonoBehaviour
     {
-        #region Fields
+        #region Fields and Properties
 
-        public static GameManager Instance { get; private set; }
-
-        //Drag and Drop the respective Canvases to these
-        [SerializeField] private GameObject _menuScreen;
-        [SerializeField] private GameObject _creditsScreen;
-        [SerializeField] private GameObject _settingsScreen;
-        [SerializeField] private GameObject _highscoreScreen;        
+        internal static GameManager Instance { get; private set; }   
+        internal GameState State;
 
         #endregion
 
-        #region Properties
+        #region Functions
 
-        //allows for getting the GameState by other scripts
-        //setting only over SwitchState outside of GameManager
-        private GameState _state;
-        public GameState State
+        private void Awake()
         {
-            get { return _state; }
-            private set { _state = value; }
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(this);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
 
-        #endregion
+        private void Start()
+        {
+            SwitchState(GameState.MainMenu);
+        }
 
-        #region Public Functions
-
-        //State Machine using the GameState enum of EnumCollections
-        //EnumCollections is a separate Script that needs to be present
-        //in the project
         public void SwitchState(GameState state)
         {
-            Instance._state = state;
+            Instance.State = state;
+
             switch (state)
             {
                 case (GameState.MainMenu):
-                    Scene _scene = SceneManager.GetActiveScene();
-                    string _sceneName = _scene.name;
-
-                    if (_sceneName != "MainMenu")
-                    {
+                    if (SceneManager.GetActiveScene().name != "MainMenu")
                         SceneManager.LoadSceneAsync("MainMenu");
-                    }
 
-                    CloseAllCanvases();
-                    Instance._menuScreen.SetActive(true);
-                    AudioManager.Instance.FadeGameTrack(Track.MainMenu, Fade.In);
-                    break;
-
-                case (GameState.Credits):
-                    CloseAllCanvases();
-                    Instance._creditsScreen.SetActive(true);
-                    break; 
-
-                case (GameState.Settings):
-                    CloseAllCanvases();
-                    Instance._settingsScreen.SetActive(true);
-                    break;   
-
-                case (GameState.HighscoreMenu):
-                    CloseAllCanvases();
-                    Instance._highscoreScreen.SetActive(true);
-                    break; 
-
-                case (GameState.Starting):
-                    CloseAllCanvases();
-                    //PlayGameTrack is a Method in the AudioManager
-                    //It plays the Track that is referenced by using a
-                    //Track enum in EnumCollection and an enum to decide whether to fade in or out
-                    SceneManager.LoadSceneAsync("LevelOne");
-                    AudioManager.Instance.FadeGameTrack(Track.MainMenu, Fade.Out);
-                    AudioManager.Instance.FadeGameTrack(Track.GameTrackOne, Fade.In);
-                    break;
-
-                case (GameState.GameOver):
-                    //do end of game stuff here
+                    AudioManager.Instance.FadeGameTrack(GameTrack.MainMenu, Fade.In);
                     break;
 
                 case (GameState.NewGame):
-                    //do reset game stuff here, in case player restarts in-game
+                    SceneManager.LoadSceneAsync("LevelOne");
+                    AudioManager.Instance.FadeGameTrack(GameTrack.MainMenu, Fade.Out);
+                    AudioManager.Instance.FadeGameTrack(GameTrack.GameTrackOne, Fade.In);
+                    break;
+
+                case (GameState.GameOver):
+                    break;
+
+                case (GameState.Victory):
                     break;
 
                 case (GameState.Quit):
@@ -107,40 +69,14 @@ namespace GameName
         }
 
         #endregion
+    }
 
-        #region Private Functions
-
-        //closes all canvases, meant for state-changes in SwitchState()
-        private void CloseAllCanvases()
-        {
-            Instance._menuScreen.SetActive(false);
-            Instance._creditsScreen.SetActive(false);
-            Instance._settingsScreen.SetActive(false);
-            Instance._highscoreScreen.SetActive(false);
-        }
-
-        //Awake, so that it runs before the Start Functions of other
-        //scripts that need to reference "Instance" in Start
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(this);
-            }
-            else
-            {
-                Instance = this;
-                DontDestroyOnLoad(this);
-            }
-        }
-
-        private void Start()
-        {
-            //starts the game in the main menu
-            Instance.SwitchState(GameState.MainMenu);
-        }
-
-        #endregion
-
+    internal enum GameState
+    {
+        MainMenu,
+        NewGame,
+        GameOver,
+        Victory,
+        Quit
     }
 }

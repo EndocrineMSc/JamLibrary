@@ -1,28 +1,31 @@
-using GameName.Audio;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using EnumCollection;
-using GameName;
 
-namespace GameName.AudioOptions
+namespace Audio
 {
-    public class AudioOptionManager : MonoBehaviour
+    internal class AudioOptionManager : MonoBehaviour
     {
         #region Fields
+
+        internal static AudioOptionManager Instance { get; private set; }
 
         [SerializeField] private AudioMixer _audioMixer;
 
         #endregion
 
-        #region Public Functions
+        #region Functions
 
-        //Functions for Menu Sliders with an Audio Mixer Asset
-        //Music and EffectSound AudioSource need to have that
-        //Mixer assigned to their OutPut
-        //Log volume makes slider volume change linear instead
-        //of logarihtmic, because decibels are on a log scale
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+                Destroy(gameObject);
+        }
+
         public void SetMasterVolume(float volume)
         {
             _audioMixer.SetFloat("Master", volume > 0 ? Mathf.Log(volume) *20f : -80f);
@@ -36,15 +39,11 @@ namespace GameName.AudioOptions
         public void SetEffectsVolume(float volume)
         {
             _audioMixer.SetFloat("Master", volume > 0 ? Mathf.Log(volume) * 20f : -80f);
+            
             //Play an exemplary SFX to give the play an auditory volume feedback
-            AudioManager.Instance.PlaySoundEffect(SFX.PlayerGotHit);
+            AudioManager.Instance.PlaySoundEffectOnce(SFX.ButtonClick);
         }
 
         #endregion
-
-        #region Private Functions
-
-        #endregion
-
     }
 }
